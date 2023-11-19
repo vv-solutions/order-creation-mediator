@@ -1,0 +1,29 @@
+order:
+  creation:
+    mediator:
+      contextName: order-creation-mediator
+
+      mq:
+        host: ${MQ_HOST}
+        username: ${MQ_USERNAME}
+        password: ${MQ_PASSWORD}
+        vhost: /
+        useSsl: true
+        redeliveryBaseDelaySec: 15
+        redeliveryMultiplier: 2
+        redeliveryMaxDelaySec: 2000
+
+
+      routes:
+        creationEvent:
+          in: "rabbitmq:order.creation.fx?queue=order.creation.q&autoAck=false&autoDelete=false&skipExchangeDeclare=true&skipDlqDeclare=true&reQueue=true"
+          routeId: "receive-mq-route-misc-cash"
+
+
+
+"%dev":
+  quarkus:
+    log:
+      level: INFO
+      console:
+        json: false
