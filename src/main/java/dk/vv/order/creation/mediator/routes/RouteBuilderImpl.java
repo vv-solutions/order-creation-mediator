@@ -5,6 +5,11 @@ import dk.vv.order.creation.mediator.Configuration;
 import dk.vv.order.creation.mediator.Constants;
 import dk.vv.order.creation.mediator.dtos.NotificationDTO;
 import dk.vv.order.creation.mediator.dtos.TicketResponseDTO;
+import dk.vv.order.creation.mediator.processors.ConvertToDeliveryDTOProcessor;
+import dk.vv.order.creation.mediator.processors.ConvertToNotificationDTOProcessor;
+import dk.vv.order.creation.mediator.processors.ConvertToOrderDTOProcessor;
+import dk.vv.order.creation.mediator.processors.ConvertToTicketDTOProcessor;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ExchangePattern;
@@ -23,11 +28,20 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
 
     private final CamelContext camelContext;
 
+    private final ConvertToDeliveryDTOProcessor convertToDeliveryDTOProcessor;
+    private final ConvertToNotificationDTOProcessor convertToNotificationDTOProcessor;
+    private final ConvertToOrderDTOProcessor convertToOrderDTOProcessor;
+    private final ConvertToTicketDTOProcessor convertToTicketDTOProcessor;
+
     @Inject
-    public RouteBuilderImpl(Logger logger, Configuration configuration, CamelContext camelContext) {
+    public RouteBuilderImpl(Logger logger, Configuration configuration, CamelContext camelContext, ConvertToDeliveryDTOProcessor convertToDeliveryDTOProcessor, ConvertToNotificationDTOProcessor convertToNotificationDTOProcessor, ConvertToOrderDTOProcessor convertToOrderDTOProcessor, ConvertToTicketDTOProcessor convertToTicketDTOProcessor) {
         this.logger = logger;
         this.configuration = configuration;
         this.camelContext = camelContext;
+        this.convertToDeliveryDTOProcessor= convertToDeliveryDTOProcessor;
+        this.convertToNotificationDTOProcessor = convertToNotificationDTOProcessor;
+        this.convertToOrderDTOProcessor = convertToOrderDTOProcessor;
+        this.convertToTicketDTOProcessor = convertToTicketDTOProcessor;
     }
 
 

@@ -14,6 +14,7 @@ public interface Configuration {
         String host();
         String username();
         String password();
+        int port();
         String vhost();
         boolean useSsl();
         int redeliveryBaseDelaySec();
@@ -25,10 +26,18 @@ public interface Configuration {
             String in();
             String routeId();
         }
+        interface InOutRoute{
+            String in();
+            String out();
+            String routeId();
+        }
 
         InRoute creationEvent();
-
-
+        InRoute handleResponse();
+        InOutRoute ticket();
+        InOutRoute notification();
+        InOutRoute updateStatus();
+        InOutRoute delivery();
 
 
     }

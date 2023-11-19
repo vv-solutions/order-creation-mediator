@@ -23,21 +23,14 @@ public class ConvertToOrderDTOProcessor implements Processor {
     public void process(Exchange exchange) throws Exception {
         var ticketResponse = exchange.getIn().getBody(TicketResponseDTO.class);
         OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setStatusId();
 
-        ticketDTO.setComment(order.getComment());
-        ticketDTO.setSupplierId(order.getSupplierId());
-
-        for (OrderLineDTO orderLine : order.getOrderLines()) {
-            TicketLineDTO ticketLineDTO = new TicketLineDTO();
-
-            ticketLineDTO.setProductId(orderLine.getProductId());
-            ticketLineDTO.setQuantity(orderLine.getQuantity());
-            ticketLineDTO.setProductName(order.getComment());
-
-            ticketDTO.addTicketLine(ticketLineDTO);
+        if (ticketResponse.isAccepted()){
+            orderDTO.setStatusId(OrderStatus.ACCEPTED.value());
+        } else {
+            orderDTO.setStatusId(OrderStatus.DENIED.value());
         }
 
-        exchange.getIn().setBody(ticketDTO);
+        orderDTO.setId(ticketResponse.getOrderId());
+        exchange.getIn().setBody(orderDTO);
     }
 }

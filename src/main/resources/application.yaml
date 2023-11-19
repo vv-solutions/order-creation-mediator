@@ -52,3 +52,5 @@ order:
       level: INFO
       console:
         json: false
+    devservices:
+      enabled: false

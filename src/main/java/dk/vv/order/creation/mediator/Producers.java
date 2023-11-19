@@ -1,7 +1,10 @@
 package dk.vv.order.creation.mediator;
 
 import com.rabbitmq.client.ConnectionFactory;
+import dk.vv.order.creation.mediator.processors.ConvertToDeliveryDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToNotificationDTOProcessor;
+import dk.vv.order.creation.mediator.processors.ConvertToOrderDTOProcessor;
+import dk.vv.order.creation.mediator.processors.ConvertToTicketDTOProcessor;
 import io.quarkus.arc.Unremovable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -15,6 +18,10 @@ public class Producers {
 
     @Inject
     Configuration configuration;
+
+    @Inject
+    Logger logger;
+
     @Produces
     @Unremovable
     ConnectionFactory rabbitConnectionFactory(Logger logger) throws NoSuchAlgorithmException, KeyManagementException {
@@ -33,7 +40,21 @@ public class Producers {
         }};
     }
     @Produces
-    ConvertToNotificationDTOProcessor getConvertToNotificationDTOProcessor (){
+    ConvertToNotificationDTOProcessor getConvertToNotificationDTOProcessor (Logger logger){
         return new ConvertToNotificationDTOProcessor(logger);
+    }
+
+    @Produces
+    ConvertToDeliveryDTOProcessor getConvertToDeliveryDTOProcessor (Logger logger){
+        return new ConvertToDeliveryDTOProcessor(logger);
+    }
+
+    @Produces
+    ConvertToOrderDTOProcessor getConvertToOrderDTOProcessor (Logger logger){
+        return new ConvertToOrderDTOProcessor(logger);
+    }
+    @Produces
+    ConvertToTicketDTOProcessor getConvertToTicketDTOProcessor (Logger logger){
+        return new ConvertToTicketDTOProcessor(logger);
     }
 }
