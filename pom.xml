@@ -28,6 +28,11 @@
       <version>1.0.2</version>
     </dependency>
     <dependency>
+      <groupId>dk.vv</groupId>
+      <artifactId>common-enums</artifactId>
+      <version>1.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.camel.quarkus</groupId>
       <artifactId>camel-quarkus-rabbitmq</artifactId>
       <version>2.16.0</version>

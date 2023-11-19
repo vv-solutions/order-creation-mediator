@@ -4,11 +4,12 @@ order:
       contextName: order-creation-mediator
 
       mq:
-        host: ${MQ_HOST}
-        username: ${MQ_USERNAME}
-        password: ${MQ_PASSWORD}
-        vhost: /
-        useSsl: true
+        host: ${MTOGO_RABBITMQ_HOST}
+        username: ${MTOGO_RABBITMQ_USERNAME}
+        password: ${MTOGO_RABBITMQ_PASSWORD}
+        port: ${MTOGO_RABBITMQ_PORT}
+        vhost: ${MTOGO_RABBITMQ_VHOST}
+        useSsl: false
         redeliveryBaseDelaySec: 15
         redeliveryMultiplier: 2
         redeliveryMaxDelaySec: 2000
@@ -16,9 +17,33 @@ order:
 
       routes:
         creationEvent:
-          in: "rabbitmq:order.creation.fx?queue=order.creation.q&autoAck=false&autoDelete=false&skipExchangeDeclare=true&skipDlqDeclare=true&reQueue=true"
-          routeId: "receive-mq-route-misc-cash"
+          in: rabbitmq:order.creation.fx?queue=order.creation.q&autoAck=false&autoDelete=false&skipExchangeDeclare=true&skipDlqDeclare=true&reQueue=true
+          routeId: receive-creation-event-route-id
 
+        ticket:
+          in: direct:handle-ticket-in
+          out: rabbitmq:ticket.dx?exchangeType=direct&durable=true&autoDelete=false&skipQueueDeclare=true&declare=false
+          routeId: handle-ticket-route-id
+
+        notification:
+          in: direct:handle-notification-in
+          out: rabbitmq:notification.dx?exchangeType=direct&autoDelete=false&skipQueueDeclare=true&declare=false
+          routeId: handle-notification-route-id
+
+
+        updateStatus:
+          in: direct:update-status-route
+          out: rabbitmq:order.status.dx?exchangeType=direct&autoDelete=false&skipQueueDeclare=true&declare=false
+          routeId: update-status-route-id
+
+        handleResponse:
+          in: rabbitmq:ticket.dx?queue=ticket.response.q&routingKey=ticket.response&autoAck=false&autoDelete=false&skipExchangeDeclare=true&skipDlqDeclare=true&reQueue=true
+          routeId: handle-response-route-id
+
+        delivery:
+          in: direct:handle-delivery-route
+          out: rabbitmq:delivery.dx?exchangeType=direct&autoDelete=false&skipQueueDeclare=true&declare=false
+          routeId: handle-delivery-route-id
 
 
 "%dev":
