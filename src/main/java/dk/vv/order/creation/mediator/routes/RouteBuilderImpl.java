@@ -68,6 +68,7 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
                      // send order received notification queue
                     .to(configuration.routes().notification().in())
                 .end()
+                .process(exchange -> logger.info("Finished processing order creation event"))
         ;
 
 
@@ -78,6 +79,7 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
 
                 // accepted
                 .choice().when(e-> e.getIn().getBody(TicketResponseDTO.class).isAccepted())
+                .process(exchange -> logger.info("in choice"))
                     .multicast()
                         // send delivery information
                         .to(configuration.routes().delivery().in())
@@ -110,22 +112,34 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
                 .process( e-> {
                     e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.TICKET_CREATION_ROUTING_KEY);
                 })
+                .removeHeaders("*", RabbitMQConstants.CORRELATIONID, RabbitMQConstants.ROUTING_KEY)
 
                 .to(ExchangePattern.InOnly,configuration.routes().ticket().out())
         ;
 
         from(configuration.routes().delivery().in()).routeId(configuration.routes().delivery().routeId())
+                .process(exchange -> logger.info("in del"))
                 .process(convertToDeliveryDTOProcessor)
                 .marshal().json()
+
+                .process( e-> {
+                    e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.DELIVERY_CREATION_ROUTING_KEY);
+                })
+                .removeHeaders("*", RabbitMQConstants.CORRELATIONID, RabbitMQConstants.ROUTING_KEY)
                 .to(configuration.routes().delivery().out())
         ;
 
 
         from(configuration.routes().updateStatus().in()).routeId(configuration.routes().updateStatus().routeId())
+                .process(exchange -> logger.info("in stat"))
                 .process(convertToOrderDTOProcessor)
                 .marshal().json()
-                .to(configuration.routes().delivery().out())
 
+                .process( e-> {
+                    e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.ORDER_STATUS_ROUTING_KEY);
+                })
+                .removeHeaders("*", RabbitMQConstants.CORRELATIONID, RabbitMQConstants.ROUTING_KEY)
+                .to(configuration.routes().delivery().out())
         ;
 
     }
