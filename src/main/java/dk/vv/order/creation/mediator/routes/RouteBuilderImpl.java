@@ -97,11 +97,16 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
                         .to(configuration.routes().notification().in())
                     .end()
                 .end()
+                .process(exchange -> logger.info("Finished processing order accept/deny"))
         ;
 //
         from(configuration.routes().notification().in()).routeId(configuration.routes().notification().routeId())
                 .process(convertToNotificationDTOProcessor)
                 .marshal().json()
+                .process( e-> {
+                    e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.NOTIFICATION_ROUTING_KEY);
+                })
+                .removeHeaders("*", RabbitMQConstants.CORRELATIONID, RabbitMQConstants.ROUTING_KEY)
                 .to(configuration.routes().notification().out())
         ;
 
