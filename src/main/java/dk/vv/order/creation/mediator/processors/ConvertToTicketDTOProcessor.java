@@ -1,11 +1,9 @@
 package dk.vv.order.creation.mediator.processors;
 
+import dk.vv.common.data.transfer.objects.kitchen.TicketDTO;
+import dk.vv.common.data.transfer.objects.kitchen.TicketLineDTO;
 import dk.vv.common.data.transfer.objects.order.OrderDTO;
 import dk.vv.common.data.transfer.objects.order.OrderLineDTO;
-import dk.vv.order.creation.mediator.dtos.DeliveryDTO;
-import dk.vv.order.creation.mediator.dtos.TicketDTO;
-import dk.vv.order.creation.mediator.dtos.TicketLineDTO;
-import dk.vv.order.creation.mediator.dtos.TicketResponseDTO;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.jboss.logging.Logger;

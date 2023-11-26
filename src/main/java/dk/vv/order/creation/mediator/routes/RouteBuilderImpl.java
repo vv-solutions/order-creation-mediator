@@ -1,19 +1,21 @@
 package dk.vv.order.creation.mediator.routes;
 
+import dk.vv.common.data.transfer.objects.kitchen.TicketResponseDTO;
 import dk.vv.common.data.transfer.objects.order.OrderDTO;
 import dk.vv.order.creation.mediator.Configuration;
 import dk.vv.order.creation.mediator.Constants;
-import dk.vv.order.creation.mediator.dtos.NotificationDTO;
-import dk.vv.order.creation.mediator.dtos.TicketResponseDTO;
+import dk.vv.order.creation.mediator.dtos.DeliveryDTO;
 import dk.vv.order.creation.mediator.processors.ConvertToDeliveryDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToNotificationDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToOrderDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToTicketDTOProcessor;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.inject.Named;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
+import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
 import org.apache.camel.quarkus.core.FastCamelContext;
 import org.jboss.logging.Logger;
@@ -33,8 +35,11 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
     private final ConvertToOrderDTOProcessor convertToOrderDTOProcessor;
     private final ConvertToTicketDTOProcessor convertToTicketDTOProcessor;
 
+    private final JacksonDataFormat responseDataFormat;
+    private final JacksonDataFormat deliveryDataFormat;
+
     @Inject
-    public RouteBuilderImpl(Logger logger, Configuration configuration, CamelContext camelContext, ConvertToDeliveryDTOProcessor convertToDeliveryDTOProcessor, ConvertToNotificationDTOProcessor convertToNotificationDTOProcessor, ConvertToOrderDTOProcessor convertToOrderDTOProcessor, ConvertToTicketDTOProcessor convertToTicketDTOProcessor) {
+    public RouteBuilderImpl(Logger logger, Configuration configuration, CamelContext camelContext, ConvertToDeliveryDTOProcessor convertToDeliveryDTOProcessor, ConvertToNotificationDTOProcessor convertToNotificationDTOProcessor, ConvertToOrderDTOProcessor convertToOrderDTOProcessor, ConvertToTicketDTOProcessor convertToTicketDTOProcessor, @Named("response") JacksonDataFormat responseDataFormat,@Named("delivery") JacksonDataFormat deliveryDataFormat) {
         this.logger = logger;
         this.configuration = configuration;
         this.camelContext = camelContext;
@@ -42,7 +47,10 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
         this.convertToNotificationDTOProcessor = convertToNotificationDTOProcessor;
         this.convertToOrderDTOProcessor = convertToOrderDTOProcessor;
         this.convertToTicketDTOProcessor = convertToTicketDTOProcessor;
+        this.responseDataFormat = responseDataFormat;
+        this.deliveryDataFormat = deliveryDataFormat;
     }
+
 
 
     @Override
@@ -75,7 +83,7 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
         // Handle ticket accept / deny
         from(configuration.routes().handleResponse().in()).routeId(configuration.routes().handleResponse().routeId())
                 .process(exchange -> logger.info("recv: Started processing order accept/deny event from queue"))
-                .unmarshal().json(TicketResponseDTO.class)
+                .unmarshal(responseDataFormat)
 
                 // accepted
                 .choice().when(e-> e.getIn().getBody(TicketResponseDTO.class).isAccepted())
@@ -125,7 +133,7 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
         from(configuration.routes().delivery().in()).routeId(configuration.routes().delivery().routeId())
                 .process(exchange -> logger.info("in del"))
                 .process(convertToDeliveryDTOProcessor)
-                .marshal().json()
+                .marshal(deliveryDataFormat)
 
                 .process( e-> {
                     e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.DELIVERY_CREATION_ROUTING_KEY);

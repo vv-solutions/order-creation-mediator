@@ -25,7 +25,7 @@
     <dependency>
       <groupId>dk.vv</groupId>
       <artifactId>common-data-transfer-objects</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.4</version>
     </dependency>
     <dependency>
       <groupId>dk.vv</groupId>
