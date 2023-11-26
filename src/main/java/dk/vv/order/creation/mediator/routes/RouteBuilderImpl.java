@@ -17,6 +17,7 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.quarkus.core.FastCamelContext;
 import org.jboss.logging.Logger;
 
