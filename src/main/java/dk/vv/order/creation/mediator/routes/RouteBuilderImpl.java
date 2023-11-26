@@ -88,7 +88,6 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
 
                 // accepted
                 .choice().when(e-> e.getIn().getBody(TicketResponseDTO.class).isAccepted())
-                .process(exchange -> logger.info("in choice"))
                     .multicast()
                         // send delivery information
                         .to(configuration.routes().delivery().in())
@@ -132,7 +131,6 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
         ;
 
         from(configuration.routes().delivery().in()).routeId(configuration.routes().delivery().routeId())
-                .process(exchange -> logger.info("in del"))
                 .process(convertToDeliveryDTOProcessor)
                 .marshal(deliveryDataFormat)
 
@@ -145,7 +143,6 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
 
 
         from(configuration.routes().updateStatus().in()).routeId(configuration.routes().updateStatus().routeId())
-                .process(exchange -> logger.info("in stat"))
                 .process(convertToOrderDTOProcessor)
                 .marshal().json()
 
@@ -153,7 +150,7 @@ public class RouteBuilderImpl extends EndpointRouteBuilder {
                     e.getIn().setHeader(RabbitMQConstants.ROUTING_KEY,Constants.ORDER_STATUS_ROUTING_KEY);
                 })
                 .removeHeaders("*", RabbitMQConstants.CORRELATIONID, RabbitMQConstants.ROUTING_KEY)
-                .to(configuration.routes().delivery().out())
+                .to(configuration.routes().updateStatus().out())
         ;
 
     }
