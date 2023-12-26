@@ -24,14 +24,13 @@ public class ConvertToTicketDTOProcessor implements Processor {
 
         ticketDTO.setComment(order.getComment());
         ticketDTO.setSupplierId(order.getSupplierId());
+        ticketDTO.setOrderId(order.getId());
 
         for (OrderLineDTO orderLine : order.getOrderLines()) {
             TicketLineDTO ticketLineDTO = new TicketLineDTO();
 
             ticketLineDTO.setProductId(orderLine.getProductId());
             ticketLineDTO.setQuantity(orderLine.getQuantity());
-            ticketLineDTO.setProductName(order.getComment());
-
             ticketDTO.addTicketLine(ticketLineDTO);
         }
 

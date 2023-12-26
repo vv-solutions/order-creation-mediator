@@ -3,8 +3,8 @@ package dk.vv.order.creation.mediator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.rabbitmq.client.ConnectionFactory;
+import dk.vv.common.data.transfer.objects.delivery.DeliveryDTO;
 import dk.vv.common.data.transfer.objects.kitchen.TicketResponseDTO;
-import dk.vv.order.creation.mediator.dtos.DeliveryDTO;
 import dk.vv.order.creation.mediator.processors.ConvertToDeliveryDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToNotificationDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToOrderDTOProcessor;
@@ -15,7 +15,6 @@ import jakarta.enterprise.inject.Produces;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import org.apache.camel.component.jackson.JacksonDataFormat;
-import org.apache.camel.spi.DataFormat;
 import org.jboss.logging.Logger;
 
 import java.security.KeyManagementException;

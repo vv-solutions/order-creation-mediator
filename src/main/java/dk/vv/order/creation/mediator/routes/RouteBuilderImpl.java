@@ -4,7 +4,6 @@ import dk.vv.common.data.transfer.objects.kitchen.TicketResponseDTO;
 import dk.vv.common.data.transfer.objects.order.OrderDTO;
 import dk.vv.order.creation.mediator.Configuration;
 import dk.vv.order.creation.mediator.Constants;
-import dk.vv.order.creation.mediator.dtos.DeliveryDTO;
 import dk.vv.order.creation.mediator.processors.ConvertToDeliveryDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToNotificationDTOProcessor;
 import dk.vv.order.creation.mediator.processors.ConvertToOrderDTOProcessor;
@@ -17,7 +16,6 @@ import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.rabbitmq.RabbitMQConstants;
-import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.quarkus.core.FastCamelContext;
 import org.jboss.logging.Logger;
 

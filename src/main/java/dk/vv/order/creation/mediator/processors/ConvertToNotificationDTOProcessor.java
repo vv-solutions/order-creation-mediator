@@ -1,8 +1,8 @@
 package dk.vv.order.creation.mediator.processors;
 
+import dk.vv.common.data.transfer.objects.Notification.NotificationDTO;
 import dk.vv.common.data.transfer.objects.kitchen.TicketResponseDTO;
 import dk.vv.common.data.transfer.objects.order.OrderDTO;
-import dk.vv.order.creation.mediator.dtos.NotificationDTO;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.jboss.logging.Logger;
