@@ -38,3 +38,4 @@ spec:
                 name: mtogo-service
             - secretRef:
                 name: mtogo-rabbit
+
