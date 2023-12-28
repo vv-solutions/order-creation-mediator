@@ -50,4 +50,6 @@ spec:
                   key: username
           envFrom:
             - configMapRef:
-                name: mtogo-db-jdbc
+                name: mtogo-service
+            - secretRef:
+                name: mtogo-rabbit
